@@ -144,8 +144,16 @@ async function assembleQuestionnaire(
     return subquestionnaires;
   }
 
-  // Recursively assemble subquestionnaires if required
-  for (let subquestionnaire of subquestionnaires) {
+  // Recursively assemble subquestionnaires if required. Write each assembled result back into the
+  // array by index — reassigning the `for...of` loop variable would leave `subquestionnaires`
+  // holding the original, un-assembled children, so any nested (child-of-child) subQuestionnaire
+  // placeholders would never be resolved.
+  for (let i = 0; i < subquestionnaires.length; i++) {
+    const subquestionnaire = subquestionnaires[i];
+    if (!subquestionnaire) {
+      continue;
+    }
+
     const assembled: Questionnaire | OperationOutcome = await assembleQuestionnaire(
       subquestionnaire,
       totalCanonicals,
@@ -160,7 +168,7 @@ async function assembleQuestionnaire(
       return assembled;
     }
 
-    subquestionnaire = assembled;
+    subquestionnaires[i] = assembled;
   }
 
   // Check for prohibited attributes and compare matching language properties
@@ -178,7 +186,10 @@ async function assembleQuestionnaire(
     return matchingLanguageOutcome;
   }
 
-  // Get items
+  // Get items — a compact list with one entry per subquestionnaire, in the document order the
+  // placeholders appear in the parent form tree. propagateProperties() walks that tree in the same
+  // order (recursing into wrapper groups) and consumes this list placeholder by placeholder, so
+  // regular items mixed in and nested wrapper groups are preserved in place.
   const items: (QuestionnaireItem[] | null)[] = getItems(subquestionnaires);
 
   // Get urls with versions

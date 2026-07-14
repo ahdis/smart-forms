@@ -16,7 +16,7 @@
  */
 
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
-import type { OperationOutcome, Questionnaire } from 'fhir/r4';
+import type { OperationOutcome, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { assemble } from '../utils/assemble';
 import type { FetchQuestionnaireCallback, InputParameters } from '../interfaces';
 import { fetchSubquestionnaires } from '../utils/fetchSubquestionnaires';
@@ -214,6 +214,23 @@ describe('assemble', () => {
     expect(assembledQuestionnaire.version).toBe('1.0.0-assembled');
     expect(assembledQuestionnaire.url).toBe('http://example.com/assessments/test/1');
     expect(mockFetchSubquestionnaires).toHaveBeenCalledTimes(2);
+
+    // The child-of-child placeholder must be fully resolved: the deep question is present and the
+    // nested placeholder is gone. This only holds if each recursively assembled subquestionnaire is
+    // written back into the subquestionnaires array (reassigning the loop variable would not).
+    const nestedGroup = assembledQuestionnaire.item?.[0]?.item?.[0];
+    expect(nestedGroup?.linkId).toBe('nested-group');
+    expect(nestedGroup?.item?.map((item) => item.linkId)).toEqual(['deep-question']);
+    const hasUnresolvedPlaceholder = (items: QuestionnaireItem[] | undefined): boolean =>
+      !!items?.some(
+        (item) =>
+          item.extension?.some(
+            (ext) =>
+              ext.url ===
+              'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire'
+          ) || hasUnresolvedPlaceholder(item.item)
+      );
+    expect(hasUnresolvedPlaceholder(assembledQuestionnaire.item)).toBe(false);
   });
 
   it('should handle multiple subquestionnaires in same parent', async () => {
@@ -292,6 +309,224 @@ describe('assemble', () => {
     expect(assembledQuestionnaire.item?.[0]?.item).toHaveLength(2);
     expect(assembledQuestionnaire.item?.[0]?.item?.[0]?.linkId).toBe('patient-name');
     expect(assembledQuestionnaire.item?.[0]?.item?.[1]?.linkId).toBe('medical-history');
+  });
+
+  it('should preserve regular items mixed alongside a subquestionnaire placeholder', async () => {
+    // A form group that mixes a regular question (index 0) with a subQuestionnaire placeholder
+    // (index 1). getItems() returns a compact list with a single entry (index 0), so without
+    // aligning it to the parent item positions the child items land on the regular question —
+    // dropping it — while the placeholder at index 1 is left unresolved.
+    const mixedQuestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'mixed-subq',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1',
+      meta: {
+        profile: ['http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular']
+      },
+      item: [
+        {
+          linkId: 'root-group',
+          type: 'group',
+          item: [
+            {
+              linkId: 'manifestation',
+              type: 'choice',
+              text: 'Manifestation'
+            },
+            {
+              linkId: 'begin-ref',
+              type: 'display',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+                  valueCanonical: 'http://example.com/assessments/test/1/ManifestationBegin|1.0.0'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const beginSubquestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'manifestation-begin',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1/ManifestationBegin',
+      item: [
+        { linkId: 'beginUnknown', type: 'boolean', text: 'Onset unknown' },
+        { linkId: 'beginDate', type: 'date', text: 'Onset date' }
+      ]
+    };
+
+    const inputParameters = createInputParameters(mixedQuestionnaire);
+
+    mockFetchSubquestionnaires.mockResolvedValue([beginSubquestionnaire]);
+
+    const result = await assemble(
+      inputParameters,
+      mockFetchQuestionnaireCallback,
+      mockFetchQuestionnaireCallbackConfig
+    );
+
+    expect(result.resourceType).toBe('Questionnaire');
+    const assembledQuestionnaire = result as Questionnaire;
+
+    const assembledItems = assembledQuestionnaire.item?.[0]?.item;
+    // The regular manifestation question is kept in place; the placeholder is replaced by the
+    // subquestionnaire's items (in order), with no leftover subQuestionnaire placeholder.
+    expect(assembledItems?.map((item) => item.linkId)).toEqual([
+      'manifestation',
+      'beginUnknown',
+      'beginDate'
+    ]);
+    const hasUnresolvedPlaceholder = assembledItems?.some((item) =>
+      item.extension?.some(
+        (ext) =>
+          ext.url ===
+          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire'
+      )
+    );
+    expect(hasUnresolvedPlaceholder).toBe(false);
+  });
+
+  it('should resolve subquestionnaire placeholders nested inside a wrapper group', async () => {
+    // The form group has a "person" wrapper group (not itself a placeholder) that holds two
+    // subQuestionnaire placeholders, followed by a top-level "manifestation" placeholder. The
+    // wrapper group must be preserved with its placeholders resolved in place, and placeholders
+    // must be collected/replaced in depth-first document order (initials, general, manifestation).
+    const nestedQuestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'nested-subq',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1',
+      meta: {
+        profile: ['http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular']
+      },
+      item: [
+        {
+          linkId: 'root-group',
+          type: 'group',
+          item: [
+            {
+              linkId: 'person',
+              type: 'group',
+              text: 'Person',
+              item: [
+                {
+                  linkId: 'personInitials-ref',
+                  type: 'display',
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+                      valueCanonical: 'http://example.com/assessments/test/1/PersonInitials|1.0.0'
+                    }
+                  ]
+                },
+                {
+                  linkId: 'personGeneral-ref',
+                  type: 'display',
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+                      valueCanonical: 'http://example.com/assessments/test/1/PersonGeneral|1.0.0'
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              linkId: 'manifestation-ref',
+              type: 'display',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+                  valueCanonical: 'http://example.com/assessments/test/1/Manifestation|1.0.0'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const personInitialsSubquestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'person-initials',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1/PersonInitials',
+      item: [{ linkId: 'initials', type: 'string', text: 'Name initials' }]
+    };
+
+    const personGeneralSubquestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'person-general',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1/PersonGeneral',
+      item: [
+        { linkId: 'dateOfBirth', type: 'date', text: 'Date of birth' },
+        { linkId: 'residence', type: 'string', text: 'Residence' }
+      ]
+    };
+
+    const manifestationSubquestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'manifestation',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1/Manifestation',
+      item: [{ linkId: 'manifestationChoice', type: 'choice', text: 'Manifestation' }]
+    };
+
+    const inputParameters = createInputParameters(nestedQuestionnaire);
+
+    // fetchSubquestionnaires is called once with all canonicals, returning them in document order
+    mockFetchSubquestionnaires.mockResolvedValue([
+      personInitialsSubquestionnaire,
+      personGeneralSubquestionnaire,
+      manifestationSubquestionnaire
+    ]);
+
+    const result = await assemble(
+      inputParameters,
+      mockFetchQuestionnaireCallback,
+      mockFetchQuestionnaireCallbackConfig
+    );
+
+    expect(result.resourceType).toBe('Questionnaire');
+    const assembledQuestionnaire = result as Questionnaire;
+
+    const formItems = assembledQuestionnaire.item?.[0]?.item;
+    // Top level of the form group: the person wrapper group is preserved, then the manifestation
+    // placeholder is replaced in place.
+    expect(formItems?.map((item) => item.linkId)).toEqual(['person', 'manifestationChoice']);
+
+    // The person wrapper group is still a group and now contains the resolved initials + general items.
+    const personGroup = formItems?.[0];
+    expect(personGroup?.type).toBe('group');
+    expect(personGroup?.item?.map((item) => item.linkId)).toEqual([
+      'initials',
+      'dateOfBirth',
+      'residence'
+    ]);
+
+    // No subQuestionnaire placeholder survives anywhere in the assembled tree.
+    const hasUnresolvedPlaceholder = (items: typeof formItems): boolean =>
+      !!items?.some(
+        (item) =>
+          item.extension?.some(
+            (ext) =>
+              ext.url ===
+              'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire'
+          ) || hasUnresolvedPlaceholder(item.item)
+      );
+    expect(hasUnresolvedPlaceholder(formItems)).toBe(false);
   });
 
   it('should propagate contained resources from subquestionnaires', async () => {
