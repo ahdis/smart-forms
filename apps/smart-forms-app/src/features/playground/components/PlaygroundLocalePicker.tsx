@@ -20,9 +20,11 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import TranslateIcon from '@mui/icons-material/Translate';
 import { InputAdornment, Tooltip } from '@mui/material';
+import { resolveCatalogForLocale } from '../../../locales/renderer/rendererStringsCatalogs.ts';
 
-// The renderer bundles these locale catalogs (plus the English default). Unknown
-// locales fall back to English, so this list mirrors what actually changes the UI.
+// This app hosts these renderer translation catalogs (see src/locales/renderer); the renderer
+// itself bundles no translations. Unknown locales fall back to the renderer's English defaults,
+// so this list mirrors what actually changes the UI.
 const LOCALE_OPTIONS = [
   { value: 'en', label: 'English' },
   { value: 'de-CH', label: 'Deutsch (CH)' },
@@ -38,12 +40,22 @@ function PlaygroundLocalePicker() {
   const selectedLocale = locale ?? 'en';
 
   return (
-    <Tooltip title="Renderer language (chrome strings, dates, validation messages)">
+    // disableInteractive: otherwise the hover tooltip overlays the opened dropdown and intercepts clicks on the options
+    <Tooltip
+      title="Renderer language (chrome strings, dates, validation messages)"
+      disableInteractive>
       <TextField
         select
         size="small"
         value={selectedLocale}
-        onChange={(event) => setRendererConfig({ locale: event.target.value })}
+        onChange={(event) =>
+          // locale drives date formatting/calendar localisation; the strings themselves
+          // come from the app-hosted catalog injected via rendererStrings.
+          setRendererConfig({
+            locale: event.target.value,
+            rendererStrings: resolveCatalogForLocale(event.target.value)
+          })
+        }
         slotProps={{
           input: {
             startAdornment: (

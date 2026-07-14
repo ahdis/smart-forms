@@ -52,6 +52,7 @@ import type {
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { resetAndBuildForm } from '../../../utils/manageForm.ts';
+import { rendererConfigOptionsForLocale } from '../../../locales/renderer/rendererStringsCatalogs.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 import type Client from 'fhirclient/lib/Client';
 import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
@@ -154,12 +155,12 @@ function Playground() {
         }
 
         // Before building the form, reset any existing form state.
-        // Derive the renderer locale from Questionnaire.language (falls back to English
-        // when absent or when no bundled catalog matches). The locale picker can override this.
+        // Derive the renderer locale from Questionnaire.language (falls back to English when
+        // absent or when no app-hosted catalog matches). The locale picker can override this.
         await resetAndBuildForm({
           questionnaire: parsedQuestionnaire,
           terminologyServerUrl,
-          rendererConfigOptions: { locale: parsedQuestionnaire.language ?? 'en' }
+          rendererConfigOptions: rendererConfigOptionsForLocale(parsedQuestionnaire.language)
         });
 
         setBuildingState('built');
@@ -191,7 +192,7 @@ function Playground() {
     await resetAndBuildForm({
       questionnaire,
       terminologyServerUrl,
-      rendererConfigOptions: { locale: questionnaire.language ?? 'en' }
+      rendererConfigOptions: rendererConfigOptionsForLocale(questionnaire.language)
     });
     setBuildingState('built');
   }
@@ -233,7 +234,7 @@ function Playground() {
           await resetAndBuildForm({
             questionnaire,
             terminologyServerUrl: config.terminologyServerUrl,
-            rendererConfigOptions: { locale: questionnaire.language ?? 'en' }
+            rendererConfigOptions: rendererConfigOptionsForLocale(questionnaire.language)
           });
           setBuildingState('built');
         } else {
