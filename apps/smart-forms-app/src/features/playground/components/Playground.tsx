@@ -153,8 +153,14 @@ function Playground() {
           setSmartConfigStoreResolvedFhirContextReferences({ PractitionerRole: practitionerRole });
         }
 
-        // Before building the form, reset any existing form state
-        await resetAndBuildForm({ questionnaire: parsedQuestionnaire, terminologyServerUrl });
+        // Before building the form, reset any existing form state.
+        // Derive the renderer locale from Questionnaire.language (falls back to English
+        // when absent or when no bundled catalog matches). The locale picker can override this.
+        await resetAndBuildForm({
+          questionnaire: parsedQuestionnaire,
+          terminologyServerUrl,
+          rendererConfigOptions: { locale: parsedQuestionnaire.language ?? 'en' }
+        });
 
         setBuildingState('built');
       } else {
@@ -181,7 +187,12 @@ function Playground() {
 
     setJsonString(JSON.stringify(questionnaire, null, 2));
 
-    await resetAndBuildForm({ questionnaire, terminologyServerUrl });
+    // Derive the renderer locale from Questionnaire.language; the locale picker can override.
+    await resetAndBuildForm({
+      questionnaire,
+      terminologyServerUrl,
+      rendererConfigOptions: { locale: questionnaire.language ?? 'en' }
+    });
     setBuildingState('built');
   }
 
@@ -218,9 +229,11 @@ function Playground() {
             );
           }
 
+          // Derive the renderer locale from Questionnaire.language; the locale picker can override.
           await resetAndBuildForm({
             questionnaire,
-            terminologyServerUrl: config.terminologyServerUrl
+            terminologyServerUrl: config.terminologyServerUrl,
+            rendererConfigOptions: { locale: questionnaire.language ?? 'en' }
           });
           setBuildingState('built');
         } else {
