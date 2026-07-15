@@ -33,8 +33,7 @@ export const SUB_QUESTIONNAIRE_EXTENSION_URL =
 export function itemIsSubQuestionnaire(item: QuestionnaireItem): boolean {
   return (
     item.extension?.some(
-      (extension) =>
-        extension.url === SUB_QUESTIONNAIRE_EXTENSION_URL && !!extension.valueCanonical
+      (extension) => extension.url === SUB_QUESTIONNAIRE_EXTENSION_URL && !!extension.valueCanonical
     ) ?? false
   );
 }
