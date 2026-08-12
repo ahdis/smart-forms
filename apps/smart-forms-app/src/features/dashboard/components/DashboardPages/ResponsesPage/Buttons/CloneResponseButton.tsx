@@ -31,6 +31,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 import { resetAndBuildForm } from '../../../../../../utils/manageForm.ts';
+import { rendererConfigOptionsForLocale } from '../../../../../../locales/renderer/rendererStringsCatalogs.ts';
 import { ConfigContext } from '../../../../../configChecker/contexts/ConfigContext.tsx';
 
 interface CloneResponseButtonProps {
@@ -138,7 +139,8 @@ function CloneResponseButton(props: CloneResponseButtonProps) {
     await resetAndBuildForm({
       questionnaire: referencedQuestionnaire,
       questionnaireResponse: newResponse,
-      terminologyServerUrl: config.terminologyServerUrl
+      terminologyServerUrl: config.terminologyServerUrl,
+      rendererConfigOptions: rendererConfigOptionsForLocale(referencedQuestionnaire.language)
     });
 
     // Pass isClone flag via router state so RendererLayout skips pre-population

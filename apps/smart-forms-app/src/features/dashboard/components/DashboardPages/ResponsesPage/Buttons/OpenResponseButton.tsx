@@ -31,6 +31,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 import { resetAndBuildForm } from '../../../../../../utils/manageForm.ts';
+import { rendererConfigOptionsForLocale } from '../../../../../../locales/renderer/rendererStringsCatalogs.ts';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from '../../../../../prepopulate/utils/callback.ts';
 import { ConfigContext } from '../../../../../configChecker/contexts/ConfigContext.tsx';
@@ -151,7 +152,8 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
         questionnaire: referencedQuestionnaire,
         questionnaireResponse: selectedResponse,
         terminologyServerUrl: config.terminologyServerUrl,
-        additionalContext: newPopulatedContext
+        additionalContext: newPopulatedContext,
+        rendererConfigOptions: rendererConfigOptionsForLocale(referencedQuestionnaire.language)
       },
       true
     );

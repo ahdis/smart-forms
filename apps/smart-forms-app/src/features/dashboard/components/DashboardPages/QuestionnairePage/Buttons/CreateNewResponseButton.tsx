@@ -24,6 +24,7 @@ import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 import { resetAndBuildForm } from '../../../../../../utils/manageForm.ts';
 import { ConfigContext } from '../../../../../configChecker/contexts/ConfigContext.tsx';
+import { rendererConfigOptionsForLocale } from '../../../../../../locales/renderer/rendererStringsCatalogs.ts';
 
 function CreateNewResponseButton() {
   const { smartClient, launchQuestionnaire } = useSmartClient();
@@ -49,7 +50,14 @@ function CreateNewResponseButton() {
 
     // Before building the form, reset any existing form state
     await resetAndBuildForm(
-      { questionnaire, terminologyServerUrl: config.terminologyServerUrl },
+      {
+        questionnaire,
+        terminologyServerUrl: config.terminologyServerUrl,
+        // Renderer chrome ("Yes"/"No", validation messages, dates) follows Questionnaire.language.
+        // Always passed, even when language is absent: setRendererConfig merges, so omitting it
+        // would leave the previous form's locale in place.
+        rendererConfigOptions: rendererConfigOptionsForLocale(questionnaire.language)
+      },
       true
     );
 

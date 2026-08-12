@@ -56,14 +56,30 @@ export function resolveCatalogForLocale(locale: string): Partial<RendererStrings
 }
 
 /**
+ * Locale used when a Questionnaire declares no language, or declares a region-less `en`.
+ *
+ * Not simply `'en'`: the renderer derives its date format from the locale via `Intl`, which maps
+ * bare `en` to the US order (`MM/DD/YYYY`). `en-AU` keeps the renderer's own documented fallback
+ * (`DD/MM/YYYY`) while still resolving to the English strings, since no `en` catalog exists.
+ *
+ * It also has to be a *defined* locale rather than `undefined`: `setRendererConfig` merges with
+ * `params.locale ?? state.locale`, so passing `undefined` would leave the previously built form's
+ * locale in place instead of resetting it.
+ */
+const DEFAULT_LOCALE = 'en-AU';
+
+/**
  * Build the renderer config options for a (possibly absent) Questionnaire.language:
  * `locale` for date formatting/calendar localisation plus the matching app-hosted
  * string catalog injected via `rendererStrings`.
+ *
+ * Region-qualified English (e.g. `en-US`) is passed through untouched, so a questionnaire that
+ * deliberately asks for US dates still gets them.
  */
 export function rendererConfigOptionsForLocale(language: string | undefined): {
   locale: string;
   rendererStrings: Partial<RendererStrings>;
 } {
-  const locale = language ?? 'en';
+  const locale = !language || language === 'en' ? DEFAULT_LOCALE : language;
   return { locale, rendererStrings: resolveCatalogForLocale(locale) };
 }
