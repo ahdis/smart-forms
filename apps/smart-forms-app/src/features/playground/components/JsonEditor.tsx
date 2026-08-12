@@ -23,6 +23,7 @@ import type { StateStore } from './StoreStateViewer.tsx';
 import StoreStateViewer from './StoreStateViewer.tsx';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import PlaygroundCustomisationToggles from './PlaygroundCustomisationToggles.tsx';
+import PlaygroundLocalePicker from './PlaygroundLocalePicker.tsx';
 import PlaygroundAdvancedPropsMenu from './PlaygroundAdvancedPropsMenu.tsx';
 
 interface JsonEditorProps {
@@ -104,6 +105,7 @@ function JsonEditor(props: JsonEditorProps) {
               />
             )}
             <Box flexGrow={1} />
+            <PlaygroundLocalePicker />
             <PlaygroundCustomisationToggles />
             {view === 'editor' ? (
               <Tooltip title="Format JSON">
