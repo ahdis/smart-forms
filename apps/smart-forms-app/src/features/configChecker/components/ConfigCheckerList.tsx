@@ -71,7 +71,19 @@ function ConfigCheckerList(props: ConfigCheckerListProps) {
       : 'null';
   }, [config.registeredClientIds]);
 
-  const nullableConfigItems: ConfigCheckerItem[] = [
+  const optionalConfigItems: ConfigCheckerItem[] = [
+    ...(config.sourceFhirServerUrl !== undefined
+      ? [
+          {
+            label: 'Source FHIR Server URL (Playground)',
+            isValid: isValidUrl(config.sourceFhirServerUrl),
+            type: 'string',
+            description: `Set value: ${
+              config.sourceFhirServerUrl === '' ? '<empty string>' : config.sourceFhirServerUrl
+            }`
+          }
+        ]
+      : []),
     ...(config.registeredClientIdsUrl !== undefined
       ? [
           {
@@ -102,8 +114,8 @@ function ConfigCheckerList(props: ConfigCheckerListProps) {
 
   const mandatoryValidCount = mandatoryConfigItems.filter((item) => item.isValid).length;
   const mandatoryTotalCount = mandatoryConfigItems.length;
-  const optionalValidCount = nullableConfigItems.filter((item) => item.isValid).length;
-  const optionalTotalCount = nullableConfigItems.length;
+  const optionalValidCount = optionalConfigItems.filter((item) => item.isValid).length;
+  const optionalTotalCount = optionalConfigItems.length;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -127,15 +139,15 @@ function ConfigCheckerList(props: ConfigCheckerListProps) {
         </Paper>
       </Box>
 
-      {/* Nullable Configuration */}
-      {nullableConfigItems.length > 0 && (
+      {/* Optional Configuration */}
+      {optionalConfigItems.length > 0 && (
         <Box>
           <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            Nullable Configuration
+            Optional Configuration
           </Typography>
           <ConfigCheckerProgress validCount={optionalValidCount} totalCount={optionalTotalCount} />
           <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
-            {nullableConfigItems.map((item, index) => (
+            {optionalConfigItems.map((item, index) => (
               <ConfigCheckerListItem
                 key={index}
                 label={item.label}
