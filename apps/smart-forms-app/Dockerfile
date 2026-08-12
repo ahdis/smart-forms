@@ -1,7 +1,9 @@
 # Dockerfile
 
 # Step 1: Use a Node.js image to build the app
-FROM --platform=$BUILDPLATFORM node:18 AS builder
+# Node 20 to match build_test_lint.yml / amplify.yml: @vitejs/plugin-react@5
+# requires node ^20.19.0 || >=22.12.0 and does not build on node 18.
+FROM --platform=$BUILDPLATFORM node:20 AS builder
 
 # Set working directory inside the container
 WORKDIR /app
