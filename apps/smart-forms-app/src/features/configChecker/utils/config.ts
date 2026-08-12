@@ -22,6 +22,11 @@ export interface ConfigFile {
   // Questionnaire-hosting FHIR server
   formsServerUrl: string;
 
+  // Playground only: default "Source FHIR Server URL" used for pre-population and write-back.
+  // Only seeds the initial value — once a user changes it in the playground settings dialog,
+  // their browser's localStorage wins. Defaults to `https://hapi.fhir.org/baseR4` if not specified.
+  sourceFhirServerUrl?: string;
+
   /* It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR */
   // Default/fallback SMART App Launch client ID, preferably client IDs should be assigned by the server and stored in a separate JSON file to be fetched at runtime (because there is no persistence on this app)
   defaultClientId: string;
@@ -50,10 +55,16 @@ export interface AppConfig extends ConfigFile {
   registeredClientIds: Record<string, string> | null;
 }
 
+// Used when `sourceFhirServerUrl` is absent from config.json. A loaded config replaces
+// FALLBACK_CONFIG wholesale rather than being merged into it, so an older config.json leaves
+// the field undefined and this is what the playground falls back to.
+export const DEFAULT_SOURCE_FHIR_SERVER_URL = 'https://hapi.fhir.org/baseR4';
+
 export const FALLBACK_CONFIG: AppConfig = {
   // From ConfigFile
   terminologyServerUrl: 'https://r4.ontoserver.csiro.au/fhir',
   formsServerUrl: 'https://smartforms.csiro.au/api/fhir',
+  sourceFhirServerUrl: DEFAULT_SOURCE_FHIR_SERVER_URL,
   defaultClientId: 'a57d90e3-5f69-4b92-aa2e-2992180863c1',
   launchScopes:
     'launch openid fhirUser online_access patient/AllergyIntolerance.cus patient/Condition.cus patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cus patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
@@ -73,6 +84,8 @@ export function responseIsAppConfig(response: any): response is AppConfig {
     response.defaultClientId !== '' &&
     typeof response.launchScopes === 'string' &&
     response.launchScopes !== '' &&
+    // Check optional properties
+    (response.sourceFhirServerUrl === undefined || isValidUrl(response.sourceFhirServerUrl)) &&
     // Check nullable properties
     (response.registeredClientIdsUrl === null || isValidUrl(response.registeredClientIdsUrl)) &&
     (response.registeredClientIds === null ||
