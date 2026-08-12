@@ -20,7 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import TranslateIcon from '@mui/icons-material/Translate';
 import { InputAdornment, Tooltip } from '@mui/material';
-import { resolveCatalogForLocale } from '../../../locales/renderer/rendererStringsCatalogs.ts';
+import { rendererConfigOptionsForLocale } from '../../../locales/renderer/rendererStringsCatalogs.ts';
 
 // This app hosts these renderer translation catalogs (see src/locales/renderer); the renderer
 // itself bundles no translations. Unknown locales fall back to the renderer's English defaults,
@@ -36,8 +36,12 @@ function PlaygroundLocalePicker() {
   const locale = useRendererConfigStore.use.locale();
   const setRendererConfig = useRendererConfigStore.use.setRendererConfig();
 
-  // `locale` is undefined until set; the English catalog is the effective default.
-  const selectedLocale = locale ?? 'en';
+  // The store's locale is not always one of the options below: it is undefined until set, it is the
+  // app default (`en-AU`) for questionnaires declaring no language or a bare `en`, and it is
+  // whatever `Questionnaire.language` says for a form built from the editor. Anything unlisted
+  // shows as English rather than leaving MUI with an out-of-range value.
+  const selectedLocale =
+    locale && LOCALE_OPTIONS.some((option) => option.value === locale) ? locale : 'en';
 
   return (
     // disableInteractive: otherwise the hover tooltip overlays the opened dropdown and intercepts clicks on the options
@@ -49,12 +53,10 @@ function PlaygroundLocalePicker() {
         size="small"
         value={selectedLocale}
         onChange={(event) =>
-          // locale drives date formatting/calendar localisation; the strings themselves
-          // come from the app-hosted catalog injected via rendererStrings.
-          setRendererConfig({
-            locale: event.target.value,
-            rendererStrings: resolveCatalogForLocale(event.target.value)
-          })
+          // Same resolution as building a form from a Questionnaire.language, so picking "English"
+          // here yields the same dates as a questionnaire that declares none. Setting `locale`
+          // raw would hand Intl a bare `en` and switch dates to the US MM/DD/YYYY order.
+          setRendererConfig(rendererConfigOptionsForLocale(event.target.value))
         }
         slotProps={{
           input: {
