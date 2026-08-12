@@ -96,6 +96,11 @@ The Smart Forms app uses a `config.json` file for configuration, fetched at runt
      // Questionnaire-hosting FHIR server
      formsServerUrl: string;
    
+     // Playground only: default "Source FHIR Server URL" used for pre-population and write-back.
+     // Only seeds the initial value — once a user changes it in the playground settings dialog,
+     // their browser's localStorage wins. Defaults to `https://hapi.fhir.org/baseR4` if not specified.
+     sourceFhirServerUrl?: string;
+   
      // Default/fallback SMART App Launch client ID, preferably client IDs should be assigned by the server and stored in a separate JSON file to be fetched at runtime (because there is no persistent backend on this SPA)
      defaultClientId: string;         
      
@@ -120,6 +125,7 @@ The Smart Forms app uses a `config.json` file for configuration, fetched at runt
    {
     "terminologyServerUrl": "https://tx.ontoserver.csiro.au/fhir",
     "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
+    "sourceFhirServerUrl": "https://hapi.fhir.org/baseR4",
     "defaultClientId": "a57d90e3-5f69-4b92-aa2e-2992180863c1",
     "launchScopes": "launch openid fhirUser online_access patient/AllergyIntolerance.cus patient/Condition.cus patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cus patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new",
     "registeredClientIdsUrl": "https://smartforms.csiro.au/smart-config/config.json"

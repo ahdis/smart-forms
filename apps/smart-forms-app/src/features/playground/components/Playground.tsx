@@ -58,8 +58,7 @@ import type Client from 'fhirclient/lib/Client';
 import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from '../../prepopulate/utils/callback.ts';
-
-const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
+import { DEFAULT_SOURCE_FHIR_SERVER_URL } from '../../configChecker/utils/config.ts';
 
 function Playground() {
   const { config } = useContext(ConfigContext);
@@ -67,7 +66,7 @@ function Playground() {
   // Source FHIR Server to do pre-pop and write back
   const [sourceFhirServerUrl, setSourceFhirServerUrl] = useLocalStorage<string>(
     'playgroundSourceFhirServerUrl',
-    defaultFhirServerUrl
+    config.sourceFhirServerUrl ?? DEFAULT_SOURCE_FHIR_SERVER_URL
   );
   const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
   const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
