@@ -177,7 +177,7 @@ describe('usePopulate', () => {
     tokenReceivedTimestamp: null,
     extraLaunchContext: {
       disableWriteBackSelection: false,
-      disableBundleValidation: false
+      enableBundleValidation: false
     },
     setSmartClient: jest.fn(),
     setCommonLaunchContexts: jest.fn(),

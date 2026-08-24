@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+/// <reference types="jest" />
 import { renderHook, act } from '@testing-library/react';
 import useSmartClient from '../hooks/useSmartClient';
 import type { SmartClientContextType } from '../contexts/SmartClientContext';
@@ -33,7 +34,7 @@ const mockContextValue: SmartClientContextType = {
     tokenReceivedTimestamp: null,
     extraLaunchContext: {
       disableWriteBackSelection: false,
-      disableBundleValidation: false
+      enableBundleValidation: false
     }
   },
   dispatch: mockDispatch
@@ -74,7 +75,7 @@ describe('useSmartClient', () => {
 
     expect(result.current.extraLaunchContext).toEqual({
       disableWriteBackSelection: false,
-      disableBundleValidation: false
+      enableBundleValidation: false
     });
   });
 
@@ -84,13 +85,13 @@ describe('useSmartClient', () => {
     act(() => {
       result.current.setExtraLaunchContext({
         disableWriteBackSelection: true,
-        disableBundleValidation: false
+        enableBundleValidation: false
       });
     });
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'SET_EXTRA_LAUNCH_CONTEXT',
-      payload: { disableWriteBackSelection: true, disableBundleValidation: false }
+      payload: { disableWriteBackSelection: true, enableBundleValidation: false }
     });
   });
 });

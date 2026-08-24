@@ -20,7 +20,7 @@ import { oauth2 } from 'fhirclient';
 import type { tokenResponseCustomised } from '../utils/launch.ts';
 import {
   DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY,
-  DISABLE_BUNDLE_VALIDATION_CONTEXT_KEY,
+  ENABLE_BUNDLE_VALIDATION_CONTEXT_KEY,
   getQuestionnaireReferences,
   readCommonLaunchContexts,
   readQuestionnaireContext,
@@ -127,12 +127,12 @@ function Authorisation() {
           // Read extra launch context extensions from the token response
           const rawDisableWriteBackSelection =
             tokenResponse?.[DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY];
-          const rawDisableBundleValidation = tokenResponse?.[DISABLE_BUNDLE_VALIDATION_CONTEXT_KEY];
+          const rawEnableBundleValidation = tokenResponse?.[ENABLE_BUNDLE_VALIDATION_CONTEXT_KEY];
           setExtraLaunchContext({
             disableWriteBackSelection:
               rawDisableWriteBackSelection === true || rawDisableWriteBackSelection === 'true',
-            disableBundleValidation:
-              rawDisableBundleValidation === true || rawDisableBundleValidation === 'true'
+            enableBundleValidation:
+              rawEnableBundleValidation === true || rawEnableBundleValidation === 'true'
           });
 
           // Get Questionnaire context from fhirContext array

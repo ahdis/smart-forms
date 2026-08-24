@@ -35,7 +35,7 @@ Smart Forms supports passing additional context to the app via the SMART App Lau
 | Key | Type | Description |
 |-----|------|-------------|
 | `https://smartforms.csiro.au/smart-app-launch/extra-context/disable-writeback-selection` | `boolean` | When `true`, skips the item selection step in the Save Final & Write Back dialog and writes back all items to the patient record. The string `"true"` is also accepted for launchers that serialize all values as strings. |
-| `https://smartforms.csiro.au/smart-app-launch/extra-context/disable-bundle-validation` | `boolean` | When `true`, skips post-extraction `$validate` calls against the FHIR server before the write-back dialog is shown. Useful if the server does not support `$validate` and you want to avoid the overhead. The string `"true"` is also accepted for launchers that serialize all values as strings. |
+| `https://smartforms.csiro.au/smart-app-launch/extra-context/enable-bundle-validation` | `boolean` | When `true`, enables post-extraction `$validate` calls against the FHIR server before the write-back dialog is shown. Invalid entries are excluded from selection. Validation is off by default; set this to `true` to opt in. The string `"true"` is also accepted for launchers that serialize all values as strings. |
 
 
 
