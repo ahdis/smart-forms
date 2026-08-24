@@ -98,7 +98,7 @@ describe('SmartClientContext', () => {
       expect(mockContext.state.tokenReceivedTimestamp).toBeNull();
       expect(mockContext.state.extraLaunchContext).toEqual({
         disableWriteBackSelection: false,
-        disableBundleValidation: false
+        enableBundleValidation: false
       });
       expect(typeof mockContext.dispatch).toBe('function');
     });
@@ -362,13 +362,13 @@ describe('SmartClientContext', () => {
       act(() => {
         mockContext.dispatch({
           type: 'SET_EXTRA_LAUNCH_CONTEXT',
-          payload: { disableWriteBackSelection: true, disableBundleValidation: true }
+          payload: { disableWriteBackSelection: true, enableBundleValidation: true }
         });
       });
 
       expect(mockContext.state.extraLaunchContext).toEqual({
         disableWriteBackSelection: true,
-        disableBundleValidation: true
+        enableBundleValidation: true
       });
 
       // Other state should remain unchanged
@@ -384,20 +384,20 @@ describe('SmartClientContext', () => {
       act(() => {
         mockContext.dispatch({
           type: 'SET_EXTRA_LAUNCH_CONTEXT',
-          payload: { disableWriteBackSelection: true, disableBundleValidation: true }
+          payload: { disableWriteBackSelection: true, enableBundleValidation: true }
         });
       });
 
       act(() => {
         mockContext.dispatch({
           type: 'SET_EXTRA_LAUNCH_CONTEXT',
-          payload: { disableWriteBackSelection: false, disableBundleValidation: false }
+          payload: { disableWriteBackSelection: false, enableBundleValidation: false }
         });
       });
 
       expect(mockContext.state.extraLaunchContext).toEqual({
         disableWriteBackSelection: false,
-        disableBundleValidation: false
+        enableBundleValidation: false
       });
     });
   });

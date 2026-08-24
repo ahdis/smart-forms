@@ -145,9 +145,9 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
 
     // Validate before updating state — ensures WriteBackBundleSelectorDialog mounts with
     // invalidBundleEntryIndices already set, so its selectedKeys initializer excludes invalid entries
-    const validationResults = extraLaunchContext.disableBundleValidation
-      ? new Set<number>()
-      : await validateExtractedBundle(extractResult.extractedBundle, smartClient);
+    const validationResults = extraLaunchContext.enableBundleValidation
+      ? await validateExtractedBundle(extractResult.extractedBundle, smartClient)
+      : new Set<number>();
 
     // All four updates land in the same React 18 batch → single render → component mounts correctly
     setExtractedBundle(extractResult.extractedBundle);

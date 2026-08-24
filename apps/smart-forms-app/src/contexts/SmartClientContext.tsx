@@ -23,7 +23,7 @@ import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
 
 export interface ExtraLaunchContext {
   disableWriteBackSelection: boolean;
-  disableBundleValidation: boolean;
+  enableBundleValidation: boolean;
 }
 
 export interface SmartClientState {
@@ -84,7 +84,7 @@ const initialSmartClientState: SmartClientState = {
   tokenReceivedTimestamp: null,
   extraLaunchContext: {
     disableWriteBackSelection: false,
-    disableBundleValidation: false
+    enableBundleValidation: false
   }
 };
 
