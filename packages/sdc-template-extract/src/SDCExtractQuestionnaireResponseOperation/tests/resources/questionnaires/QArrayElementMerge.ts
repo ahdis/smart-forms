@@ -80,7 +80,8 @@ export const QArrayElementMerge: Questionnaire = {
                   extension: [
                     {
                       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
-                      valueString: "%resource.descendants().where(linkId='doses').answer.value.first()"
+                      valueString:
+                        "%resource.descendants().where(linkId='doses').answer.value.first()"
                     }
                   ]
                 }
