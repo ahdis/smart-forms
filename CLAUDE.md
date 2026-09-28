@@ -31,3 +31,9 @@ git push --force-with-lease origin main-localized
 - After rebasing, compare `defaultRendererStrings` in `packages/smart-forms-renderer/src/i18n/rendererStrings.ts` with our catalogs. New upstream keys don't conflict, they just show in English, so add translations for them.
 - Verify before pushing: `npm ci`, `npm run build-all-deps-first-run`, `npx jest` in `packages/sdc-assemble` and `packages/sdc-template-extract`, and `npx tsc --noEmit` plus `npm test` in `apps/smart-forms-app`.
 - Delete backup branches once the rebased branch has proven itself.
+
+## Releases
+
+- Tag `main-localized` with the next `vX.Y.Z` (annotated) and push the tag. The tag push runs `googleregistry.yml`, which publishes `europe-west6-docker.pkg.dev/ahdis-ch/ahdis/smart-forms:vX.Y.Z`. Deploy by bumping the image tag in `k8s-fhir.ch/ahdis-infomaniak/smartforms-ahdis-ch/deployment.yaml`.
+- A GitHub release is optional. Publishing one also fires upstream's `publish_*.yml` npm workflows (`publish_smart_forms_renderer.yml` matches any `v*` tag). Only create a release while those workflows are disabled on the fork (Actions → workflow → Disable). Otherwise cancel the run immediately.
+- Upstream's `deploy_app.yml` and `deploy_docs.yml` need CSIRO's AWS role and Chromatic token and always fail on the fork. They are meant to stay disabled here.
