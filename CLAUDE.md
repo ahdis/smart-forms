@@ -17,6 +17,7 @@ This is the ahdis fork of [aehrc/smart-forms](https://github.com/aehrc/smart-for
 - CI: publish the app image to Google Artifact Registry (`.github/workflows/googleregistry.yml`).
 - sdc-assemble: preserve mixed items and resolve nested subQuestionnaire placeholders, until upstream PR #2001 is merged.
 - sdc-template-extract: evaluate `%resource` against the comparison response in modified-only extract, until upstream PR #2133 is merged.
+- app: show `$validate` errors and a "Copy JSON" button in the write-back dialog, until upstream PR #2135 is merged.
 
 ## Syncing with upstream
 
