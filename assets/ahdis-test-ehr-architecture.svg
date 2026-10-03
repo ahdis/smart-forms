@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 760" font-family="Arial, Helvetica, sans-serif">
+  <title>Test EHR for CH EKM: SMART launch, form completion, validation and write-back</title>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#3B73AA"/>
+    </marker>
+    <filter id="sh" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="1040" height="760" fill="#ffffff"/>
+  <text x="520" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#3D4960">CH EKM test EHR: from the SMART launch to the stored FHIR Document</text>
+  <rect x="20" y="45" width="1000" height="170" rx="8" fill="#F4F7FB" stroke="#D5DEEC" stroke-width="1"/>
+  <text x="32" y="60" font-size="10" font-weight="bold" fill="#6B7A90">Clinician's browser</text>
+  <rect x="40" y="70" width="290" height="130" rx="8" fill="#3B73AA" filter="url(#sh)"/>
+  <text x="185.0" y="91" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">EHR simulator UI</text>
+  <line x1="55" y1="99" x2="315" y2="99" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="185.0" y="115" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#ffffff">https://ehr.ahdis.ch</text>
+  <text x="185.0" y="130" text-anchor="middle" font-size="9" font-style="italic" fill="#E9EEF6">github.com/ahdis/SMART-EHR-Launcher (main-ahdis)</text>
+  <text x="185.0" y="145" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Pick patient, user and PractitionerRole,</text>
+  <text x="185.0" y="160" text-anchor="middle" font-size="9.5" fill="#E9EEF6">launch the app, list DocumentReferences</text>
+  <text x="185.0" y="175" text-anchor="middle" font-size="9.5" fill="#E9EEF6">config.json presets enable-bundle-validation</text>
+  <rect x="400" y="70" width="600" height="130" rx="8" fill="#3B73AA" filter="url(#sh)"/>
+  <text x="700.0" y="91" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">Smart Forms app</text>
+  <line x1="415" y1="99" x2="985" y2="99" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="700.0" y="115" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#ffffff">https://smartforms.ahdis.ch   (launch: /launch)</text>
+  <text x="700.0" y="130" text-anchor="middle" font-size="9" font-style="italic" fill="#E9EEF6">github.com/ahdis/smart-forms (main-localized)</text>
+  <text x="700.0" y="145" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Renders the CH EKM Questionnaire, pre-populates it from the EHR,</text>
+  <text x="700.0" y="160" text-anchor="middle" font-size="9.5" fill="#E9EEF6">extracts the document Bundle in the browser (sdc-populate, sdc-template-extract),</text>
+  <text x="700.0" y="175" text-anchor="middle" font-size="9.5" fill="#E9EEF6">shows $validate errors and writes the selected entries back</text>
+  <path d="M330,135 L400,135" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <circle cx="365" cy="121" r="8" fill="#3D4960"/>
+  <text x="365" y="124" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">1</text>
+  <text x="365" y="152" text-anchor="middle" font-size="9.5" fill="#3D4960">launch</text>
+  <text x="365" y="163" text-anchor="middle" font-size="9.5" fill="#3D4960">iss + launch</text>
+  <path d="M185,200 L185,290" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <circle cx="199" cy="237" r="8" fill="#3D4960"/>
+  <text x="199" y="240" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">8</text>
+  <text x="211" y="240" font-size="9.5" fill="#3D4960">patient data,</text>
+  <text x="211" y="252" text-anchor="start" font-size="9.5" fill="#3D4960">DocumentReferences</text>
+  <path d="M455,200 L455,290" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <circle cx="469" cy="225" r="8" fill="#3D4960"/>
+  <text x="469" y="228" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">2</text>
+  <text x="481" y="228" font-size="9.5" fill="#3D4960">authorize, token</text>
+  <circle cx="469" cy="243" r="8" fill="#3D4960"/>
+  <text x="469" y="246" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">4</text>
+  <text x="481" y="246" font-size="9.5" fill="#3D4960">read for pre-population</text>
+  <circle cx="469" cy="261" r="8" fill="#3D4960"/>
+  <text x="469" y="264" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">7</text>
+  <text x="481" y="264" font-size="9.5" fill="#3D4960">save and write back</text>
+  <path d="M625,200 L625,290" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <circle cx="639" cy="243" r="8" fill="#3D4960"/>
+  <text x="639" y="246" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">6</text>
+  <text x="651" y="246" text-anchor="start" font-size="9.5" fill="#3D4960">$validate</text>
+  <path d="M800,200 L800,290" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <circle cx="814" cy="243" r="8" fill="#3D4960"/>
+  <text x="814" y="246" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">3</text>
+  <text x="826" y="246" font-size="9.5" fill="#3D4960">Questionnaire</text>
+  <path d="M975,200 L975,477 L910,477" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <text transform="translate(992,330) rotate(90)" font-size="9.5" fill="#3D4960">ValueSet $expand</text>
+  <circle cx="975" cy="297" r="8" fill="#3D4960"/>
+  <text x="975" y="300" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">5</text>
+  <rect x="40" y="290" width="620" height="75" rx="8" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="350.0" y="311" text-anchor="middle" font-size="12" font-weight="bold" fill="#2B5081">Ingress ehr-proxy.ahdis.ch (ingress-nginx)</text>
+  <line x1="55" y1="319" x2="645" y2="319" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="350.0" y="335" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">POST /v/r4/fhir/{Type}/$validate  to matchbox, Authorization header stripped</text>
+  <text x="350.0" y="350" text-anchor="middle" font-size="9" font-style="italic" fill="#3D4960">everything else to the launch proxy · github.com/ahdis/k8s-fhir.ch (private), ehr-ingress.yaml</text>
+  <path d="M185,365 L185,425" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="195" y="399" text-anchor="start" font-size="9.5" fill="#3D4960">all other paths</text>
+  <path d="M515,365 L515,425" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="525" y="393" text-anchor="start" font-size="9.5" fill="#3D4960">/matchboxv3/fhir/{Type}/$validate</text>
+  <text x="525" y="405" text-anchor="start" font-size="9.5" fill="#3D4960">profile taken from meta.profile</text>
+  <rect x="40" y="425" width="290" height="125" rx="8" fill="#ffffff" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="185.0" y="446" text-anchor="middle" font-size="12" font-weight="bold" fill="#3B73AA">SMART launch proxy</text>
+  <line x1="55" y1="454" x2="315" y2="454" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="185.0" y="470" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">https://ehr-proxy.ahdis.ch/v/r4/fhir</text>
+  <text x="185.0" y="485" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">.../v/r4/auth/authorize · .../auth/token</text>
+  <text x="185.0" y="500" text-anchor="middle" font-size="9" font-style="italic" fill="#3D4960">github.com/ahdis/smart-launcher-v2 (main-ahdis)</text>
+  <text x="185.0" y="515" text-anchor="middle" font-size="9.5" fill="#3D4960">Adds SMART authorize/token to an open FHIR server,</text>
+  <text x="185.0" y="530" text-anchor="middle" font-size="9.5" fill="#3D4960">puts fhirContext and extra context into the token</text>
+  <rect x="370" y="425" width="290" height="125" rx="8" fill="#2B5081" filter="url(#sh)"/>
+  <text x="515.0" y="446" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">matchbox (validation)</text>
+  <line x1="385" y1="454" x2="645" y2="454" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="515.0" y="470" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#ffffff">https://test.ahdis.ch/matchboxv3/fhir</text>
+  <text x="515.0" y="485" text-anchor="middle" font-size="9" font-style="italic" fill="#E9EEF6">github.com/ahdis/matchbox (v4.1.20)</text>
+  <text x="515.0" y="500" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Type-level $validate with a Parameters body,</text>
+  <text x="515.0" y="515" text-anchor="middle" font-size="9.5" fill="#E9EEF6">returns an OperationOutcome per resource</text>
+  <rect x="690" y="290" width="220" height="125" rx="8" fill="#ffffff" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="800.0" y="311" text-anchor="middle" font-size="12" font-weight="bold" fill="#3B73AA">Forms server (HAPI FHIR)</text>
+  <line x1="705" y1="319" x2="895" y2="319" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="800.0" y="335" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">https://smartforms.ahdis.ch/api/fhir</text>
+  <text x="800.0" y="350" text-anchor="middle" font-size="9" font-style="italic" fill="#3D4960">github.com/ahdis/hapi-fhir</text>
+  <text x="800.0" y="365" text-anchor="middle" font-size="9" font-style="italic" fill="#3D4960">(v8.8.0-pr8260-pr8371)</text>
+  <text x="800.0" y="380" text-anchor="middle" font-size="9.5" fill="#3D4960">CH EKM Questionnaires,</text>
+  <text x="800.0" y="395" text-anchor="middle" font-size="9.5" fill="#3D4960">tester page at /api</text>
+  <rect x="690" y="440" width="220" height="75" rx="8" fill="#ffffff" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="800.0" y="461" text-anchor="middle" font-size="12" font-weight="bold" fill="#3B73AA">Terminology server</text>
+  <line x1="705" y1="469" x2="895" y2="469" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="800.0" y="485" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">https://tx.fhir.ch/r4</text>
+  <text x="800.0" y="500" text-anchor="middle" font-size="9.5" fill="#3D4960">answerValueSet expansion</text>
+  <path d="M185,550 L185,610" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="195" y="584" text-anchor="start" font-size="9.5" fill="#3D4960">FHIR REST, no auth</text>
+  <rect x="40" y="610" width="290" height="125" rx="8" fill="#ffffff" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="185.0" y="631" text-anchor="middle" font-size="12" font-weight="bold" fill="#3B73AA">EHR FHIR server (HAPI FHIR)</text>
+  <line x1="55" y1="639" x2="315" y2="639" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="185.0" y="655" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">http://smartforms-ehr-fhir:8080/fhir</text>
+  <text x="185.0" y="670" text-anchor="middle" font-size="9" font-style="italic" fill="#3D4960">github.com/ahdis/hapi-fhir (v8.8.0-pr8260-pr8371)</text>
+  <text x="185.0" y="685" text-anchor="middle" font-size="9.5" fill="#3D4960">Cluster-internal, reached only through the proxy.</text>
+  <text x="185.0" y="700" text-anchor="middle" font-size="9.5" fill="#3D4960">Holds Patient, Practitioner(Role), Organization and</text>
+  <text x="185.0" y="715" text-anchor="middle" font-size="9.5" fill="#3D4960">the written QuestionnaireResponse, Bundle, DocumentReference</text>
+  <path d="M515,610 L515,550" fill="none" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="525" y="584" text-anchor="start" font-size="9.5" fill="#3D4960">IG package loaded</text>
+  <rect x="370" y="610" width="290" height="125" rx="8" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="515.0" y="631" text-anchor="middle" font-size="12" font-weight="bold" fill="#2B5081">CH EKM implementation guide</text>
+  <line x1="385" y1="639" x2="645" y2="639" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="515.0" y="655" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">ch.fhir.ig.ch-ekm#0.0.1</text>
+  <text x="515.0" y="670" text-anchor="middle" font-size="9.5" font-family="Menlo, Consolas, monospace" fill="#2B5081">https://build.fhir.org/ig/ahdis/ch-ekm</text>
+  <text x="515.0" y="685" text-anchor="middle" font-size="9" font-style="italic" fill="#3D4960">github.com/ahdis/ch-ekm</text>
+  <text x="515.0" y="700" text-anchor="middle" font-size="9.5" fill="#3D4960">Document profiles for matchbox, Questionnaires</text>
+  <text x="515.0" y="715" text-anchor="middle" font-size="9.5" fill="#3D4960">for the forms server, example data for the EHR</text>
+  <path d="M660,640 L675,640 L675,352 L690,352" fill="none" stroke="#3B73AA" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+  <text x="684" y="584" text-anchor="start" font-size="9.5" fill="#3D4960">Questionnaires uploaded</text>
+  <text x="690" y="700" font-size="9" fill="#6B7A90">Numbers follow the steps in ARCHITECTURE.md.</text>
+  <text x="690" y="713" font-size="9" fill="#6B7A90">Dashed: loaded once, not part of a launch.</text>
+</svg>
