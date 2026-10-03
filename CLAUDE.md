@@ -15,6 +15,7 @@ This is the ahdis fork of [aehrc/smart-forms](https://github.com/aehrc/smart-for
 - `honor questionnaire.language` in the playground and renderer.
 - Configurable playground Source FHIR Server URL.
 - CI: publish the app image to Google Artifact Registry (`.github/workflows/googleregistry.yml`).
+- docs: `ARCHITECTURE.md` (with `assets/ahdis-test-ehr-architecture.svg`) describes the CH EKM test EHR around ehr.ahdis.ch.
 - sdc-assemble: preserve mixed items and resolve nested subQuestionnaire placeholders, until upstream PR #2001 is merged.
 - sdc-template-extract: evaluate `%resource` against the comparison response in modified-only extract, until upstream PR #2133 is merged.
 - app: show `$validate` errors and a "Copy JSON" button in the write-back dialog, until upstream PR #2135 is merged.
