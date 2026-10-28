@@ -19,6 +19,7 @@ This is the ahdis fork of [aehrc/smart-forms](https://github.com/aehrc/smart-for
 - sdc-assemble: preserve mixed items and resolve nested subQuestionnaire placeholders, until upstream PR #2001 is merged.
 - app: show `$validate` errors and a "Copy JSON" button in the write-back dialog (only with `showDeveloperMessages`, which our deployed `config.json` sets to `true`), until upstream PR #2135 is merged.
 - app: `Cache-Control` headers in the nginx `default.conf` (`no-cache` for `index.html`/`config.json`, `immutable` for `/assets/`), until upstream PR #2187 is merged.
+- sdc-populate: populate answers from `answerOption.initialSelected` (issue #2195), until upstream PR #2196 is merged.
 
 ## Syncing with upstream
 
